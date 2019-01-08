@@ -1,9 +1,33 @@
-// import your node modules 
+// import your node modules
 
 const db = require('./data/db.js');
-const server = require('express')();
+const express = require('express');
 
 // add your server code starting here
+
+const server = express();
+
+server.use(express.json());
+
+server.post('/api/posts', (req, res) => {
+
+  const post = req.body;
+
+  if (!post.title || !post.contents) {
+
+    res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+
+  }
+
+  else {
+
+    db.insert(post)
+      .then(data => res.status(201).json(data))
+      .catch(err => res.status(500).json({ error: "There was an error while saving the post to the database" }));
+
+  }
+
+});
 
 server.get('/api/posts', (req, res) => {
 
