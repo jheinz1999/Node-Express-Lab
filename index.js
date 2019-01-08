@@ -59,6 +59,41 @@ server.delete('/api/posts/:id', async (req, res) => {
 
 });
 
+server.put('/api/posts/:id', async (req, res) => {
+
+  const edit = req.body;
+
+  if (!edit.title || !edit.contents)
+    res.status(400).json({ errorMessage: "Please provide title and contents for the post." });
+
+  try {
+
+    const post = await db.findById(req.params.id);
+
+    if (post.length) {
+
+      await db.update(req.params.id, edit);
+
+      res.status(200).json(edit);
+
+    }
+
+    else {
+
+      res.status(404).json({ message: "The post with the specified ID does not exist." });
+
+    }
+
+  }
+
+  catch (err) {
+
+
+
+  }
+
+});
+
 server.get('/api/posts', (req, res) => {
 
   db.find()
